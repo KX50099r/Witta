@@ -1,0 +1,207 @@
+# WITTA System Architecture
+
+## Conceptual Architecture
+
+### Core Components
+1. **WITTA Core (AI Manager):**
+   - Runs as a Python application in a Docker container.
+   - Manages tasks, interacts with APIs, and coordinates with other components.
+   - Includes functionality for governance, trading, and DeFi management.
+
+2. **Support Apps (Docker Containers):**
+   - **Database:** PostgreSQL or MySQL for storing persistent data like user preferences, governance proposals, and trading logs.
+   - **Web Server:** Flask or FastAPI for providing a user-facing API or web interface.
+   - **Cache:** Redis for storing session data or frequently accessed information.
+   - **Vector Database:** ChromaDB or Pinecone for semantic search and memory retrieval.
+   - **Additional Tools:** Services like file storage or external task-specific apps.
+
+3. **Reverse Proxy:**
+   - Nginx or Traefik to manage traffic and provide SSL termination for secure communication.
+
+4. **Monitoring and Logging:**
+   - Tools like Prometheus and Grafana for resource monitoring.
+   - ELK Stack (Elasticsearch, Logstash, Kibana) for centralized logging.
+
+---
+
+## Revised Architecture in Docker Compose
+
+```yaml
+version: '3.9'
+
+services:
+  witta-core:
+    build:
+      context: .
+    image: witta-core:latest
+    container_name: witta-core
+    ports:
+      - "8080:8080"
+    environment:
+      - API_KEY=your-api-key
+      - DATABASE_URL=postgresql://user:password@database:5432/witta
+    volumes:
+      - ./data:/app/data
+
+  database:
+    image: postgres:15
+    container_name: witta-database
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: witta
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  vector-db:
+    image: chromadb/chromadb:latest
+    container_name: witta-vector-db
+    ports:
+      - "8000:8000"
+    volumes:
+      - vector_data:/data
+
+  redis:
+    image: redis:7
+    container_name: witta-cache
+    ports:
+      - "6379:6379"
+
+  web-server:
+    build:
+      context: ./web
+    image: witta-web:latest
+    container_name: witta-web
+    ports:
+      - "80:80"
+    volumes:
+      - ./web:/app
+    depends_on:
+      - witta-core
+
+  reverse-proxy:
+    image: nginx:latest
+    container_name: witta-proxy
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
+volumes:
+  db_data:
+  vector_data:
+WITTA’s Role in the Architecture
+
+1. Task Management:
+
+WITTA Core orchestrates tasks like proposal generation, trading actions, or DeFi tracking.
+
+Interacts with the vector database for memory and context.
+
+
+
+2. Data Handling:
+
+Stores persistent data (e.g., proposals, trading logs) in PostgreSQL.
+
+Uses Redis for temporary or session data.
+
+
+
+3. User Interaction:
+
+Web server exposes APIs for interaction (e.g., submitting proposals, querying trading performance).
+
+
+
+4. Monitoring and Scaling:
+
+Prometheus tracks container resource usage.
+
+Scale components dynamically based on demand.
+
+
+
+
+
+---
+
+Advantages
+
+Modular Design: Easy to add or replace services without affecting others.
+
+Portability: Deploy anywhere Docker is supported.
+
+Scalability: Scale individual components (e.g., multiple web server instances).
+
+Isolation: Each service runs independently, reducing the risk of cross-service failures.
+
+
+
+---
+
+Development Workflow
+
+Core Logic (Python):
+
+Develop WITTA Core as a Python app with functionalities for task management and API interaction.
+
+Use docker-py for managing Docker containers programmatically.
+
+
+APIs:
+
+Expose APIs using Flask or FastAPI for interaction with external systems.
+
+
+Docker Automation:
+
+Write Python scripts to dynamically manage containers:
+
+import docker
+
+client = docker.from_env()
+client.containers.run("redis:7", detach=True, name="witta-cache")
+
+
+Deployment and Testing:
+
+Use Docker Compose for local testing.
+
+Deploy to cloud services (AWS, Azure, GCP) for production.
+
+
+
+---
+
+Next Steps
+
+1. Set Up Docker:
+
+Install Docker and Docker Compose.
+
+Test a basic docker-compose.yml with WITTA Core and a database.
+
+
+
+2. Develop WITTA Core:
+
+Implement basic functions for task management (e.g., proposal generation, trading data access).
+
+Integrate with APIs (e.g., OpenAI, Robinhood).
+
+
+
+3. Test Support Services:
+
+Set up and test PostgreSQL, Redis, and ChromaDB containers.
+
+
+
+4. Plan for Scaling:
+
+Define triggers for scaling (e.g., high request volume) and test horizontal scaling for web servers.
+
