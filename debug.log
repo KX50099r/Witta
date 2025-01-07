@@ -1,0 +1,23 @@
+INFO:     Will watch for changes in these directories: ['/home/ubuntu/Witta']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [26418] using StatReload
+INFO:     Started server process [26420]
+INFO:     Waiting for application startup.
+2025-01-07 06:50:58,679 - Server is starting...
+2025-01-07 06:50:58,680 - Running periodic tasks
+2025-01-07 06:50:58,680 - Task added: {'id': 1, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
+INFO:     Application startup complete.
+2025-01-07 06:51:58,682 - Running periodic tasks
+2025-01-07 06:51:58,682 - Task added: {'id': 2, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
+2025-01-07 06:52:58,683 - Running periodic tasks
+2025-01-07 06:52:58,683 - Task added: {'id': 3, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
+2025-01-07 06:53:58,684 - Running periodic tasks
+2025-01-07 06:53:58,684 - Task added: {'id': 4, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
+2025-01-07 06:54:58,685 - Running periodic tasks
+2025-01-07 06:54:58,685 - Task added: {'id': 5, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2025-01-07 06:55:50,598 - Server is shutting down...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [26420]
+INFO:     Stopping reloader process [26418]
