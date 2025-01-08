@@ -1,3 +1,51 @@
+## **Update Log Entry**
+**Date:** January 8, 2025  
+**Project:** Witta Server  
+
+### **Changes Made**
+1. **Elastic IP Configuration:**
+   - Elastic IP `52.8.29.234` was set up for the server.
+   - Verified server startup and binding to `0.0.0.0`.
+
+2. **Code Updates:**
+   - Refactored `orchestrator.py` to include a proper `main` instance of `TaskOrchestratorAsync`.
+   - Improved shutdown handling for the orchestrator using a `running` flag.
+   - Updated `main.py` with refined lifecycle management (`asynccontextmanager`).
+
+3. **Debugging Steps:**
+   - Fixed `uvicorn` command errors by ensuring proper virtual environment activation.
+   - Resolved `ImportError` for the `main` object in `orchestrator.py`.
+   - Verified server functionality on `127.0.0.1`.
+
+### **Pending Issues**
+- The server is responsive locally (`127.0.0.1`) but not accessible via the Elastic IP (`52.8.29.234`).
+
+---
+
+## **To-Do List**
+### **Immediate Tasks**
+1. **Network Configuration:**
+   - Verify AWS Security Group settings for inbound traffic on port `8000`.
+   - Confirm Elastic IP is correctly associated with the instance.
+   - Check and configure UFW rules on the server if necessary.
+
+2. **Server Access:**
+   - Test server accessibility from an external network using the Elastic IP.
+   - Ensure `curl` requests to `http://52.8.29.234:8000/` return a valid response.
+
+---
+
+### **Future Tasks**
+1. **Code Enhancements:**
+   - Add more robust logging for server startup and shutdown.
+   - Implement error handling for potential connection issues with Elastic IP.
+
+2. **Front-End Development:**
+   - Set up a basic front-end for accessing API endpoints.
+
+3. **Documentation:**
+   - Document the current setup for easy replication or scaling.
+
 # Update Log
 **Project Name:** WITTA  
 **Repository:** Private  

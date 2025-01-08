@@ -1,16 +1,7 @@
-2025-01-07 06:43:48,171 - Server is starting...
-2025-01-07 06:43:48,171 - Running periodic tasks
-2025-01-07 06:43:48,171 - Task added: {'id': 1, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
-2025-01-07 06:44:38,524 - Server is shutting down...
-2025-01-07 06:50:58,679 - Server is starting...
-2025-01-07 06:50:58,680 - Running periodic tasks
-2025-01-07 06:50:58,680 - Task added: {'id': 1, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
-2025-01-07 06:51:58,682 - Running periodic tasks
-2025-01-07 06:51:58,682 - Task added: {'id': 2, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
-2025-01-07 06:52:58,683 - Running periodic tasks
-2025-01-07 06:52:58,683 - Task added: {'id': 3, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
-2025-01-07 06:53:58,684 - Running periodic tasks
-2025-01-07 06:53:58,684 - Task added: {'id': 4, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
-2025-01-07 06:54:58,685 - Running periodic tasks
-2025-01-07 06:54:58,685 - Task added: {'id': 5, 'agent': 'fetch_crypto_data', 'payload': {'symbol': 'BTC'}}
-2025-01-07 06:55:50,598 - Server is shutting down...
+nohup: ignoring input
+INFO:     Started server process [30262]
+INFO:     Waiting for application startup.
+2025-01-08 04:34:20,963 - Starting Witta server...
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50136 - "GET /health HTTP/1.1" 200 OK

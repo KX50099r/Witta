@@ -33,7 +33,6 @@ async def lifespan(app: FastAPI):
     yield
     # Shutdown logic
     logger.info("Shutting down Witta server...")
-    await orchestrator_main.shutdown()  # Gracefully stop the orchestrator
     orchestrator_task.cancel()
     try:
         await orchestrator_task  # Wait for the task to complete

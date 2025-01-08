@@ -13,7 +13,6 @@ class TaskOrchestratorAsync:
             "data": DataAgent("DataAgent"),
             "proposal": ProposalAgent("ProposalAgent"),
         }
-        self.running = True  # Flag to control the loop
 
     async def add_task(self, agent_type, payload):
         task_id = len(self.task_results) + 1
@@ -24,13 +23,8 @@ class TaskOrchestratorAsync:
 
     async def run(self):
         try:
-            while self.running:
-                # Use asyncio timeout to allow graceful shutdown
-                try:
-                    task = await asyncio.wait_for(self.task_queue.get(), timeout=1.0)
-                except asyncio.TimeoutError:
-                    continue  # Check running flag again after timeout
-
+            while True:
+                task = await self.task_queue.get()
                 logger.info(f"Executing task: {task}")
 
                 task_id = task["id"]
@@ -50,11 +44,6 @@ class TaskOrchestratorAsync:
                 self.task_queue.task_done()
         except asyncio.CancelledError:
             logger.info("TaskOrchestratorAsync.run cancelled. Exiting gracefully.")
-        finally:
-            logger.info("TaskOrchestratorAsync has stopped.")
 
-    async def shutdown(self):
-        self.running = False  # Stop the loop
-        await self.task_queue.join()  # Wait for all tasks to be processed
-
+# Create an instance of the orchestrator
 main = TaskOrchestratorAsync()
