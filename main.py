@@ -104,6 +104,7 @@ async def add_task(task: TaskPayload):
     except Exception as e:
         logger.error(f"Error adding task: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+@app.get("/health")
 async def health_check():
     """
     Health check endpoint.
