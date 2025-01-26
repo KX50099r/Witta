@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 class TaskOrchestratorAsync:
     def __init__(self):
+        logger.info("Initializing TaskOrchestratorAsync")
         self.task_queue = asyncio.Queue()
         self.task_results = {}
         self.agents = {
@@ -28,6 +29,7 @@ class TaskOrchestratorAsync:
             logger.debug(traceback.format_exc())
 
     async def run(self):
+        logger.info("TaskOrchestratorAsync is starting")
         while self.running:
             try:
                 # Use asyncio timeout to allow graceful shutdown
@@ -52,7 +54,9 @@ class TaskOrchestratorAsync:
 
                     await agent.execute(payload)
                     self.task_results[task_id]["status"] = "completed"
+                    logger.info(f"Task {task_id} completed successfully")
                 except Exception as e:
+                    logger.error(f"Task {task_id} failed: {e}")
                     self.task_results[task_id]["status"] = f"failed: {e}"
                     logger.error(f"Error executing task {task_id}: {e}")
                     logger.debug(traceback.format_exc())
@@ -65,6 +69,8 @@ class TaskOrchestratorAsync:
 
     async def shutdown(self):
         self.running = False  # Stop the loop
+        logger.info("Shutting down TaskOrchestratorAsync")
         await self.task_queue.join()  # Wait for all tasks to be processed
+        logger.info("All tasks have been processed")
 
 main = TaskOrchestratorAsync()
