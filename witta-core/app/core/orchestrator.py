@@ -19,6 +19,9 @@ class TaskOrchestratorAsync:
 
     async def add_task(self, agent_type, payload):
         try:
+            if not isinstance(agent_type, str) or not isinstance(payload, dict):
+                raise ValueError("Invalid input types: 'agent_type' must be a string and 'payload' must be a dictionary")
+
             task_id = len(self.task_results) + 1
             task = {"id": task_id, "agent": agent_type, "payload": payload}
             await self.task_queue.put(task)

@@ -55,6 +55,18 @@ app.add_middleware(
 class TaskPayload(BaseModel):
     agent_type: str
     payload: dict
+
+    @validator('agent_type')
+    def validate_agent_type(cls, v):
+        if v not in ["data", "proposal"]:
+            raise ValueError('agent_type must be "data" or "proposal"')
+        return v
+
+    @validator('payload')
+    def validate_payload(cls, v):
+        if not isinstance(v, dict):
+            raise ValueError('payload must be a dictionary')
+        return v
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to Witta API"}
