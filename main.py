@@ -52,11 +52,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Define API endpoints
+class TaskPayload(BaseModel):
+    agent_type: str
+    payload: dict
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to Witta API"}
 
-@app.get("/health")
+@app.post("/tasks")
+async def add_task(task: TaskPayload):
+    if task.agent_type not in orchestrator_main.agents:
+        raise HTTPException(status_code=400, detail="Invalid agent type")
+    await orchestrator_main.add_task(task.agent_type, task.payload)
+    return {"message": "Task added successfully"}
 async def health_check():
     return {"status": "healthy"}
