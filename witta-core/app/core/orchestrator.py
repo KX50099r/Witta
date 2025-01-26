@@ -2,6 +2,7 @@ from .agents.data_agent import DataAgent
 from .agents.proposal_agent import ProposalAgent
 import asyncio
 import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,8 @@ class TaskOrchestratorAsync:
                     self.task_results[task_id]["status"] = "completed"
                 except Exception as e:
                     self.task_results[task_id]["status"] = f"failed: {e}"
+                    logger.error(f"Error executing task {task_id}: {e}")
+                    logger.debug(traceback.format_exc())
 
                 self.task_queue.task_done()
         except asyncio.CancelledError:
