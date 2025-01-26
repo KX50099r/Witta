@@ -58,10 +58,10 @@ class TaskOrchestratorAsync:
                     logger.debug(traceback.format_exc())
 
                 self.task_queue.task_done()
-        except asyncio.CancelledError:
-            logger.info("TaskOrchestratorAsync.run cancelled. Exiting gracefully.")
-        finally:
-            logger.info("TaskOrchestratorAsync has stopped.")
+            except asyncio.CancelledError:
+                logger.info("TaskOrchestratorAsync.run cancelled. Exiting gracefully.")
+            finally:
+                logger.info("TaskOrchestratorAsync has stopped.")
 
     async def shutdown(self):
         self.running = False  # Stop the loop
