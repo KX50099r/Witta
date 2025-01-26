@@ -17,20 +17,27 @@ class TaskOrchestratorAsync:
         self.running = True  # Flag to control the loop
 
     async def add_task(self, agent_type, payload):
-        task_id = len(self.task_results) + 1
-        task = {"id": task_id, "agent": agent_type, "payload": payload}
-        await self.task_queue.put(task)
-        logger.info(f"Task added: {task}")
-        self.task_results[task_id] = {"status": "pending"}
+        try:
+            task_id = len(self.task_results) + 1
+            task = {"id": task_id, "agent": agent_type, "payload": payload}
+            await self.task_queue.put(task)
+            logger.info(f"Task added: {task}")
+            self.task_results[task_id] = {"status": "pending"}
+        except Exception as e:
+            logger.error(f"Failed to add task: {e}")
+            logger.debug(traceback.format_exc())
 
     async def run(self):
-        try:
-            while self.running:
+        while self.running:
+            try:
                 # Use asyncio timeout to allow graceful shutdown
-                try:
-                    task = await asyncio.wait_for(self.task_queue.get(), timeout=1.0)
-                except asyncio.TimeoutError:
-                    continue  # Check running flag again after timeout
+                task = await asyncio.wait_for(self.task_queue.get(), timeout=1.0)
+            except asyncio.TimeoutError:
+                continue  # Check running flag again after timeout
+            except Exception as e:
+                logger.error(f"Error retrieving task from queue: {e}")
+                logger.debug(traceback.format_exc())
+                continue
 
                 logger.info(f"Executing task: {task}")
 
