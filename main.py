@@ -74,13 +74,37 @@ class TaskPayload(BaseModel):
         return v
 @app.get("/")
 async def read_root():
+    """
+    Root endpoint of the API.
+
+    Returns:
+        dict: A welcome message.
+    """
     return {"message": "Welcome to Witta API"}
 
 @app.post("/tasks")
 async def add_task(task: TaskPayload):
+    """
+    Add a task to the orchestrator via API.
+
+    Args:
+        task (TaskPayload): The task payload containing agent type and payload.
+
+    Returns:
+        dict: A message indicating the task was added successfully.
+
+    Raises:
+        HTTPException: If the agent type is invalid.
+    """
     if task.agent_type not in orchestrator_main.agents:
         raise HTTPException(status_code=400, detail="Invalid agent type")
     await orchestrator_main.add_task(task.agent_type, task.payload)
     return {"message": "Task added successfully"}
 async def health_check():
+    """
+    Health check endpoint.
+
+    Returns:
+        dict: The health status of the API.
+    """
     return {"status": "healthy"}

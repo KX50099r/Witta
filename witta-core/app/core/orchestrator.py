@@ -44,6 +44,16 @@ class TaskOrchestratorAsync:
         Raises:
             ValueError: If the input types are invalid or the task ID already exists.
         """
+        """
+        Add a task to the orchestrator.
+
+        Args:
+            agent_type (str): The type of agent to execute the task.
+            payload (dict): The data payload for the task.
+
+        Raises:
+            ValueError: If the input types are invalid or the task ID already exists.
+        """
         try:
             if not isinstance(agent_type, str) or not isinstance(payload, dict):
                 raise ValueError("Invalid input types: 'agent_type' must be a string and 'payload' must be a dictionary")
@@ -60,6 +70,11 @@ class TaskOrchestratorAsync:
             logger.debug(traceback.format_exc())
 
     async def run(self):
+        """
+        Run the task orchestrator.
+
+        Continuously processes tasks from the queue and executes them using the appropriate agents.
+        """
         """
         Run the task orchestrator.
 
@@ -121,6 +136,11 @@ class TaskOrchestratorAsync:
                 logger.info("TaskOrchestratorAsync has stopped.")
 
     async def shutdown(self):
+        """
+        Shutdown the task orchestrator.
+
+        Stops the task processing loop and waits for all tasks to be processed.
+        """
         """
         Shutdown the task orchestrator.
 
