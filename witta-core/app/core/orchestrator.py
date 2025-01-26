@@ -52,37 +52,38 @@ class TaskOrchestratorAsync:
                 logger.debug(traceback.format_exc())
                 continue
 
-                logger.info(f"Executing task: {task}")
+                for task in tasks:
+                    logger.info(f"Executing task: {task}")
 
-                task_id = task["id"]
-                agent_type = task["agent"]
-                payload = task["payload"]
+                    task_id = task["id"]
+                    agent_type = task["agent"]
+                    payload = task["payload"]
 
-                retries = 3
-                for attempt in range(retries):
-                    try:
-                        agent = self.agents.get(agent_type)
-                        if not agent:
-                            raise Exception(f"Unknown agent type: {agent_type}")
+                    retries = 3
+                    for attempt in range(retries):
+                        try:
+                            agent = self.agents.get(agent_type)
+                            if not agent:
+                                raise Exception(f"Unknown agent type: {agent_type}")
 
-                        logger.debug(f"Executing task {task_id} with agent {agent_type}, attempt {attempt + 1}")
-                        await agent.execute(payload)
-                        logger.debug(f"Execution of task {task_id} completed")
-                        if self.task_results[task_id]["status"] == "pending":
-                            self.task_results[task_id]["status"] = "completed"
-                            logger.info(f"Task {task_id} status updated to completed")
-                        logger.info(f"Task {task_id} completed successfully")
-                        break
-                    except Exception as e:
-                        logger.error(f"Task {task_id} failed on attempt {attempt + 1}: {e}")
-                        logger.debug(traceback.format_exc())
-                        if attempt == retries - 1:
-                            self.task_results[task_id]["status"] = f"failed: {e}"
-                            logger.error(f"Task {task_id} failed after {retries} attempts")
-                        else:
-                            logger.info(f"Retrying task {task_id} (attempt {attempt + 2})")
+                            logger.debug(f"Executing task {task_id} with agent {agent_type}, attempt {attempt + 1}")
+                            await agent.execute(payload)
+                            logger.debug(f"Execution of task {task_id} completed")
+                            if self.task_results[task_id]["status"] == "pending":
+                                self.task_results[task_id]["status"] = "completed"
+                                logger.info(f"Task {task_id} status updated to completed")
+                            logger.info(f"Task {task_id} completed successfully")
+                            break
+                        except Exception as e:
+                            logger.error(f"Task {task_id} failed on attempt {attempt + 1}: {e}")
+                            logger.debug(traceback.format_exc())
+                            if attempt == retries - 1:
+                                self.task_results[task_id]["status"] = f"failed: {e}"
+                                logger.error(f"Task {task_id} failed after {retries} attempts")
+                            else:
+                                logger.info(f"Retrying task {task_id} (attempt {attempt + 2})")
 
-                self.task_queue.task_done()
+                    self.task_queue.task_done()
             except asyncio.CancelledError:
                 logger.info("TaskOrchestratorAsync.run cancelled. Exiting gracefully.")
             finally:
