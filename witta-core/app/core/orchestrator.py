@@ -29,11 +29,13 @@ class TaskOrchestratorAsync:
             logger.debug(traceback.format_exc())
 
     async def run(self):
-        logger.info("TaskOrchestratorAsync is starting")
+        logger.info("TaskOrchestratorAsync is starting the run loop")
         while self.running:
             try:
                 # Use asyncio timeout to allow graceful shutdown
+                logger.debug("Waiting for the next task")
                 task = await asyncio.wait_for(self.task_queue.get(), timeout=1.0)
+                logger.info(f"Retrieved task: {task}")
             except asyncio.TimeoutError:
                 continue  # Check running flag again after timeout
             except Exception as e:
@@ -52,7 +54,9 @@ class TaskOrchestratorAsync:
                     if not agent:
                         raise Exception(f"Unknown agent type: {agent_type}")
 
+                    logger.info(f"Executing task {task_id} with agent {agent_type}")
                     await agent.execute(payload)
+                    logger.info(f"Execution of task {task_id} completed")
                     self.task_results[task_id]["status"] = "completed"
                     logger.info(f"Task {task_id} completed successfully")
                 except Exception as e:
@@ -69,7 +73,7 @@ class TaskOrchestratorAsync:
 
     async def shutdown(self):
         self.running = False  # Stop the loop
-        logger.info("Shutting down TaskOrchestratorAsync")
+        logger.info("Initiating shutdown of TaskOrchestratorAsync")
         await self.task_queue.join()  # Wait for all tasks to be processed
         logger.info("All tasks have been processed")
 
