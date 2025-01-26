@@ -23,6 +23,8 @@ class TaskOrchestratorAsync:
                 raise ValueError("Invalid input types: 'agent_type' must be a string and 'payload' must be a dictionary")
 
             task_id = len(self.task_results) + 1
+            if task_id in self.task_results:
+                raise ValueError(f"Task ID {task_id} already exists")
             task = {"id": task_id, "agent": agent_type, "payload": payload}
             await self.task_queue.put(task)
             logger.debug(f"Task added: {task}")
@@ -60,7 +62,9 @@ class TaskOrchestratorAsync:
                     logger.debug(f"Executing task {task_id} with agent {agent_type}")
                     await agent.execute(payload)
                     logger.debug(f"Execution of task {task_id} completed")
-                    self.task_results[task_id]["status"] = "completed"
+                    if self.task_results[task_id]["status"] == "pending":
+                        self.task_results[task_id]["status"] = "completed"
+                        logger.info(f"Task {task_id} status updated to completed")
                     logger.info(f"Task {task_id} completed successfully")
                 except Exception as e:
                     logger.error(f"Task {task_id} failed: {e}")
