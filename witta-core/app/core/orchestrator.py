@@ -55,8 +55,10 @@ class TaskOrchestratorAsync:
             ValueError: If the input types are invalid or the task ID already exists.
         """
         try:
-            if not isinstance(agent_type, str) or not isinstance(payload, dict):
-                raise ValueError("Invalid input types: 'agent_type' must be a string and 'payload' must be a dictionary")
+            if not isinstance(agent_type, str):
+                raise ValueError("Invalid input type: 'agent_type' must be a string")
+            if not isinstance(payload, dict):
+                raise ValueError("Invalid input type: 'payload' must be a dictionary")
 
             task_id = len(self.task_results) + 1
             if task_id in self.task_results:
@@ -65,9 +67,14 @@ class TaskOrchestratorAsync:
             await self.task_queue.put(task)
             logger.debug(f"Task added: {task}")
             self.task_results[task_id] = {"status": "pending"}
-        except Exception as e:
-            logger.error(f"Failed to add task: {e}")
+        except ValueError as e:
+            logger.error(f"ValueError while adding task: {e}")
             logger.debug(traceback.format_exc())
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error while adding task: {e}")
+            logger.debug(traceback.format_exc())
+            raise
 
     async def run(self):
         """
@@ -81,7 +88,9 @@ class TaskOrchestratorAsync:
         Continuously processes tasks from the queue and executes them using the appropriate agents.
         """
         logger.info("TaskOrchestratorAsync is starting the run loop")
+        logger.info("TaskOrchestratorAsync is starting the run loop")
         while self.running:
+            await asyncio.sleep(0)  # Yield control to the event loop
             try:
                 # Use asyncio timeout to allow graceful shutdown
                 logger.info("Waiting for the next task")
