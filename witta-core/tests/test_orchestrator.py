@@ -1,5 +1,5 @@
 import pytest
-from app.core.orchestrator import TaskOrchestratorAsync
+from witta-core.app.core.orchestrator import TaskOrchestratorAsync
 from unittest.mock import AsyncMock
 
 @pytest.mark.asyncio
