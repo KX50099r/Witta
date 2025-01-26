@@ -96,10 +96,14 @@ async def add_task(task: TaskPayload):
     Raises:
         HTTPException: If the agent type is invalid.
     """
-    if task.agent_type not in orchestrator_main.agents:
-        raise HTTPException(status_code=400, detail="Invalid agent type")
-    await orchestrator_main.add_task(task.agent_type, task.payload)
-    return {"message": "Task added successfully"}
+    try:
+        if task.agent_type not in orchestrator_main.agents:
+            raise HTTPException(status_code=400, detail="Invalid agent type")
+        await orchestrator_main.add_task(task.agent_type, task.payload)
+        return {"message": "Task added successfully"}
+    except Exception as e:
+        logger.error(f"Error adding task: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 async def health_check():
     """
     Health check endpoint.
