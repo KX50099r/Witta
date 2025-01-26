@@ -34,13 +34,17 @@ class TaskOrchestratorAsync:
             logger.debug(traceback.format_exc())
 
     async def run(self):
-        logger.debug("TaskOrchestratorAsync is starting the run loop")
+        logger.info("TaskOrchestratorAsync is starting the run loop")
         while self.running:
             try:
                 # Use asyncio timeout to allow graceful shutdown
-                logger.debug("Waiting for the next task")
-                task = await asyncio.wait_for(self.task_queue.get(), timeout=1.0)
-                logger.debug(f"Retrieved task: {task}")
+                logger.info("Waiting for the next task")
+                tasks = []
+                while not self.task_queue.empty() and len(tasks) < 5:  # Process up to 5 tasks at once
+                    tasks.append(await self.task_queue.get())
+                if not tasks:
+                    continue
+                logger.info(f"Retrieved tasks: {tasks}")
             except asyncio.TimeoutError:
                 continue  # Check running flag again after timeout
             except Exception as e:
