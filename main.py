@@ -53,6 +53,11 @@ app.add_middleware(
 )
 
 class TaskPayload(BaseModel):
+    """
+    Task Payload Model
+
+    This model defines the structure of the task payload, including validation for agent type and payload.
+    """
     agent_type: str
     payload: dict
 

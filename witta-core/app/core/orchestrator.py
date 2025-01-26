@@ -6,8 +6,24 @@ import traceback
 
 logger = logging.getLogger(__name__)
 
+"""
+Task Orchestrator Module
+
+This module defines the TaskOrchestratorAsync class, which manages the execution of tasks using different agents.
+"""
+
 class TaskOrchestratorAsync:
+    """
+    Asynchronous Task Orchestrator
+
+    This class manages a queue of tasks and executes them using specified agents.
+    """
     def __init__(self):
+        """
+        Initialize the TaskOrchestratorAsync.
+
+        Sets up the task queue, task results, and available agents.
+        """
         logger.debug("Initializing TaskOrchestratorAsync")
         self.task_queue = asyncio.Queue()
         self.task_results = {}
@@ -18,6 +34,16 @@ class TaskOrchestratorAsync:
         self.running = True  # Flag to control the loop
 
     async def add_task(self, agent_type, payload):
+        """
+        Add a task to the orchestrator.
+
+        Args:
+            agent_type (str): The type of agent to execute the task.
+            payload (dict): The data payload for the task.
+
+        Raises:
+            ValueError: If the input types are invalid or the task ID already exists.
+        """
         try:
             if not isinstance(agent_type, str) or not isinstance(payload, dict):
                 raise ValueError("Invalid input types: 'agent_type' must be a string and 'payload' must be a dictionary")
@@ -34,6 +60,11 @@ class TaskOrchestratorAsync:
             logger.debug(traceback.format_exc())
 
     async def run(self):
+        """
+        Run the task orchestrator.
+
+        Continuously processes tasks from the queue and executes them using the appropriate agents.
+        """
         logger.info("TaskOrchestratorAsync is starting the run loop")
         while self.running:
             try:
@@ -90,6 +121,11 @@ class TaskOrchestratorAsync:
                 logger.info("TaskOrchestratorAsync has stopped.")
 
     async def shutdown(self):
+        """
+        Shutdown the task orchestrator.
+
+        Stops the task processing loop and waits for all tasks to be processed.
+        """
         self.running = False  # Stop the loop
         logger.debug("Initiating shutdown of TaskOrchestratorAsync")
         await self.task_queue.join()  # Wait for all tasks to be processed
