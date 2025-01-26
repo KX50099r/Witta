@@ -66,7 +66,12 @@ class TaskOrchestratorAsync:
                         self.task_results[task_id]["status"] = "completed"
                         logger.info(f"Task {task_id} status updated to completed")
                     logger.info(f"Task {task_id} completed successfully")
+                    logger.info(f"Task {task_id} completed successfully")
                 except Exception as e:
+                    logger.error(f"Task {task_id} failed: {e}")
+                    self.task_results[task_id]["status"] = f"failed: {e}"
+                    logger.debug(traceback.format_exc())
+                    continue  # Continue processing other tasks
                     logger.error(f"Task {task_id} failed: {e}")
                     self.task_results[task_id]["status"] = f"failed: {e}"
                     logger.error(f"Task {task_id} failed: {e}")
