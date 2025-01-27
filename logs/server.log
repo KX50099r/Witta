@@ -1,0 +1,14 @@
+nohup: ignoring input
+INFO:     Started server process [30262]
+INFO:     Waiting for application startup.
+2025-01-08 04:34:20,963 - Starting Witta server...
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50136 - "GET /health HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2025-01-25 20:11:26,118 - Shutting down Witta server...
+2025-01-25 20:11:26,118 - TaskOrchestratorAsync.run cancelled. Exiting gracefully.
+2025-01-25 20:11:26,120 - TaskOrchestratorAsync has stopped.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [30262]
